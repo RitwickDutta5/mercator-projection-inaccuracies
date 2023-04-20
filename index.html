@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Responsive Web Map Layout</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.js"></script>
+    <style>
+        html,
+        head,
+        body,
+        #main-container {
+            height: 100%;
+            width: 100%;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #main-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        nav {
+            padding: 1rem;
+            border-bottom: 1px solid #000;
+            display: flex;
+        }
+
+        .nav-links {
+            flex-grow: 1;
+            justify-content: end;
+            display: flex;
+        }
+
+        .nav-link {
+            display: inline-block;
+            font-size: .9rem;
+        }
+
+        #content-container {
+            flex-grow: 1;
+            display: flex;
+            min-height: 0;
+        }
+
+        #sidebar {
+            width: 348px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            overflow-y: scroll;
+            box-sizing: border-box;
+        }
+
+        #map {
+            height: 100%;
+            flex-grow: 1;
+        }
+
+        .title {
+            font-weight: 600;
+        }
+
+        @media only screen and (max-width: 800px) {
+            #content-container {
+                flex-direction: column-reverse;
+            }
+
+            #map {
+                height: 60%;
+                flex-shrink: 0;
+            }
+
+            #sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main-container">
+        <nav>
+            <div class="title">Responsive Map</div>
+            <div class="nav-links">
+                <a class="nav-link" href="https://github.com/chriswhong/responsive-web-map-layout" target="_blank"
+                    rel="noopener noreferrer">Github</a>
+            </div>
+
+        </nav>
+        <div id="content-container">
+            <div id="sidebar">
+                <p>This is a map that displays the inaccuracies with the Mercator Projection. </p>
+                <p>The mercator projection flattens the globe, meaning distances and sizes are misconstrued. </p>
+                <p>1. Africa (7,200 km) is longer than Russia (6,400 km)</p>
+                <p>2. Brazil (432,663) is  50% wider than the distance between Brazil and Africa (2,900 km)</p>
+                <p>3. Chile (4,270 km) is longer than Europe (3,341) km</p>
+                <p>4. This a line that represents the longest distance you can sail across the world in a straight line without hitting land. It represents a distance of 32,000 kilometres. And yes, you read that right: this is a straight line.</p>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [-74.5, 40],
+            zoom: 2
+        });
+
+        map.addControl(new mapboxgl.NavigationControl());
+
+        map.on('load', () => {
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': [
+                        [
+            -196.94772150995374,
+            59.35539139286993
+          ],
+          [
+            -179.7721333136734,
+            52.91350866113976
+          ],
+          [
+            -166.89044216646272,
+            41.93091538883769
+          ],
+          [
+            -150.57363337999615,
+            25.618138560014103
+          ],
+          [
+            -140.6976701671349,
+            9.300328143212724
+          ],
+          [
+            -128.24536872483154,
+            -13.712784890258447
+          ],
+          [
+            -111.49917023345766,
+            -34.69459940607184
+          ],
+          [
+            -98.61747908624697,
+            -48.13912822659765
+          ],
+          [
+            -85.30639823412983,
+            -53.80769811133506
+          ],
+          [
+            -55.67850859554528,
+            -58.57837044905636
+          ],
+          [
+            -39.361699809078715,
+            -56.50501728351462
+          ],
+          [
+            -19.18038367844892,
+            -52.781171151412344
+          ],
+          [
+            0.1421530423671129,
+            -49.82966415091233
+          ],
+          [
+            16.029572123926812,
+            -46.09406477362188
+          ],
+          [
+            27.62309415641596,
+            -38.485569062255145
+          ],
+          [
+            34.06393973002133,
+            -28.10378888049464
+          ],
+          [
+            45.22807205760407,
+            -12.458092751056114
+          ],
+          [
+            66.69755730295492,
+            25.230334704617547
+          ]
+        ],                        
+                    }
+                }
+            });
+            map.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'square'
+                },
+                'paint': {
+                    'line-color': '#9332a8',
+                    'line-width': 8
+                }
+            });
+        });
+        map.on('load', () => {
+            map.addSource('route1', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': [
+                        [
+          [
+            -74.06774117176911,
+            -7.602802176053643
+          ],
+          [
+            -35.379096293450885,
+            -6.368494587835045
+          ]
+        ]
+        ],                        
+                    }
+                }
+            });
+            map.addLayer({
+                'id': 'route1',
+                'type': 'line',
+                'source': 'route1',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'square'
+                },
+                'paint': {
+                    'line-color': '#4287f5',
+                    'line-width': 8
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
